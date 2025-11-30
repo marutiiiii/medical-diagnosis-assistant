@@ -14,13 +14,11 @@ router = APIRouter(prefix="/diagnosis", tags=["diagnosis"])
 @router.post("/from_report")
 async def diagnosis_from_report(data: AskDiagnosis):
     """
-    Use document_id + question to:
+    Use document_id + question + username to:
     - fetch relevant chunks from Pinecone
     - generate an answer using Gemini
     - store Q/A in MongoDB
     """
-
-    # 1) Retrieve relevant chunks from Pinecone
     chunks = retrieve_relevant_chunks(data.question, data.document_id)
 
     if not chunks:
@@ -29,23 +27,26 @@ async def diagnosis_from_report(data: AskDiagnosis):
     # 2) Generate answer with LLM
     answer = generate_answer(data.question, chunks)
 
-    # TEMP: since we’re not using auth, use a fixed username
-    username = "demo_patient"
+    # Use username from the request (logged-in user)
+    username = data.username
 
-    # 3) Store in MongoDB
     record = {
         "username": username,
         "question": data.question,
         "answer": answer,
         "document_id": data.document_id,
-        "created_at": datetime.utcnow().isoformat()
+        "created_at": datetime.utcnow().isoformat(),
     }
 
-    diagnosis_collection.insert_one(record)
+    # Don't crash if Mongo has a temporary issue
+    try:
+        diagnosis_collection.insert_one(record)
+    except Exception as e:
+        print("Mongo insert error:", e)
 
-    # 4) Return to caller (without Mongo _id)
     record["_id"] = None
     return record
+
 
 
 @router.post("/by_patient_name")
