@@ -16,33 +16,41 @@ def login(username: str, password: str):
     return requests.post(f"{API_URL}/auth/login", json=payload)
 
 
-# ---------- UI SECTIONS ----------
-
 def auth_section():
     st.sidebar.title("🔐 Authentication")
 
+    # Init session vars
     if "user" not in st.session_state:
         st.session_state["user"] = None
     if "token" not in st.session_state:
         st.session_state["token"] = None
+    if "role" not in st.session_state:
+        st.session_state["role"] = None
 
     choice = st.sidebar.radio("Choose", ["Login", "Signup"])
 
+    # --- SIGNUP (patient or doctor) ---
     if choice == "Signup":
         st.sidebar.subheader("Create Account")
         su_name = st.sidebar.text_input("New username")
         su_pass = st.sidebar.text_input("New password", type="password")
+        su_role = st.sidebar.selectbox("Role", ["patient", "doctor"])
 
         if st.sidebar.button("Sign up"):
             if not su_name or not su_pass:
                 st.sidebar.warning("Enter username & password")
             else:
-                res = signup(su_name, su_pass, role="patient")
+                res = signup(su_name, su_pass, role=su_role)
                 if res.status_code == 200:
-                    st.sidebar.success("Signup successful! You can login now.")
+                    st.sidebar.success(f"Signup successful as {su_role}! You can login now.")
                 else:
-                    st.sidebar.error(f"Signup failed: {res.json().get('detail', res.text)}")
+                    try:
+                        detail = res.json().get("detail", res.text)
+                    except Exception:
+                        detail = res.text
+                    st.sidebar.error(f"Signup failed: {detail}")
 
+    # --- LOGIN ---
     st.sidebar.subheader("Login")
     li_name = st.sidebar.text_input("Username", key="login_user")
     li_pass = st.sidebar.text_input("Password", type="password", key="login_pass")
@@ -55,17 +63,24 @@ def auth_section():
             if res.status_code == 200:
                 data = res.json()
                 st.session_state["user"] = li_name
-                st.session_state["token"] = data["token"]  # not used yet, but stored
-                st.sidebar.success(f"Logged in as {li_name}")
+                st.session_state["token"] = data.get("token")
+                st.session_state["role"] = data.get("role", "patient")
+                st.sidebar.success(f"Logged in as {li_name} ({st.session_state['role']})")
             else:
-                st.sidebar.error(f"Login failed: {res.json().get('detail', res.text)}")
+                try:
+                    detail = res.json().get("detail", res.text)
+                except Exception:
+                    detail = res.text
+                st.sidebar.error(f"Login failed: {detail}")
 
-    # Logout button
+    # --- LOGOUT ---
     if st.session_state["user"]:
         if st.sidebar.button("Logout"):
             st.session_state["user"] = None
             st.session_state["token"] = None
+            st.session_state["role"] = None
             st.sidebar.info("Logged out.")
+
 
 
 def upload_report_tab():
@@ -139,7 +154,7 @@ def ask_question_tab():
         payload = {
             "document_id": document_id,
             "question": question,
-            "username": st.session_state["user"],  # 👈 send logged-in username
+            "username": st.session_state["user"],  # 👈 important
         }
 
         with st.spinner("Thinking..."):
@@ -164,17 +179,30 @@ def ask_question_tab():
                 pass
 
 
+
 def history_tab():
-    st.header("3️⃣ Your Diagnosis History")
+    st.header("3️⃣ Diagnosis History")
 
     if "user" not in st.session_state or st.session_state["user"] is None:
         st.warning("Please login first.")
         return
 
-    username = st.session_state["user"]
-    st.write(f"Showing history for: **{username}**")
+    role = st.session_state.get("role", "patient")
+    logged_in_user = st.session_state["user"]
 
-    payload = {"patient_username": username}
+    if role == "patient":
+        st.write(f"Showing history for **you**: `{logged_in_user}`")
+        target_username = logged_in_user
+    else:
+        st.write(f"Logged in as **doctor**: `{logged_in_user}`")
+        target_username = st.text_input(
+            "Enter patient username to view their history"
+        )
+        if not target_username.strip():
+            st.info("Type a patient username above to see their records.")
+            return
+
+    payload = {"patient_username": target_username}
 
     with st.spinner("Fetching history..."):
         try:
@@ -187,7 +215,7 @@ def history_tab():
         data = res.json()
         records = data.get("records", [])
         if not records:
-            st.info("No previous diagnoses found.")
+            st.info("No diagnoses found for this user.")
             return
 
         for rec in records:
@@ -195,7 +223,7 @@ def history_tab():
             st.markdown(f"**Q:** {rec['question']}")
             st.markdown(f"**A:** {rec['answer']}")
             st.caption(
-                f"Doc ID: {rec['document_id']} • Time: {rec['created_at']}"
+                f"Patient: {rec['username']} • Doc ID: {rec['document_id']} • Time: {rec['created_at']}"
             )
     else:
         st.error(f"Error from backend: {res.status_code}")
@@ -213,8 +241,11 @@ def main():
     # Sidebar auth
     auth_section()
 
-    if st.session_state.get("user"):
-        st.success(f"Logged in as: {st.session_state['user']}")
+    user = st.session_state.get("user")
+    role = st.session_state.get("role")
+
+    if user:
+        st.success(f"Logged in as: {user} ({role})")
     else:
         st.info("Please login or sign up from the sidebar.")
 
@@ -226,6 +257,7 @@ def main():
         ask_question_tab()
     with tab3:
         history_tab()
+
 
 
 if __name__ == "__main__":
