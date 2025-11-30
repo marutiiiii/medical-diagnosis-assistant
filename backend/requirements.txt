@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+python-multipart
+pymongo[srv]
+passlib[bcrypt]
+pyjwt
+python-dotenv
+pinecone-client
+google-generativeai
+pymupdf
+streamlit
+requests
+python-dotenv
