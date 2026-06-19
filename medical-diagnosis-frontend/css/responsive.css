@@ -1,0 +1,161 @@
+/* ============================================================
+   MediDiagnose - Responsive Styles
+   Mobile-first responsive breakpoints
+   ============================================================ */
+
+/* ── Topbar hide on desktop, show toggle ── */
+.mobile-only { display: none !important; }
+.desktop-only { display: flex !important; }
+
+/* ── Sidebar overlay (mobile) ── */
+.sidebar-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.4);
+  z-index: 150;
+  backdrop-filter: blur(2px);
+}
+.sidebar-overlay.show { display: block; }
+
+/* ── Large Desktop (1440px+) ── */
+@media (min-width: 1440px) {
+  .container { max-width: 1440px; }
+  .stats-grid, .doctor-stat-row { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ── Desktop (1024px - 1439px) ── */
+@media (max-width: 1280px) {
+  :root { --sidebar-w: 230px; }
+}
+
+/* ── Tablet (768px - 1023px) ── */
+@media (max-width: 1023px) {
+  .mobile-only { display: flex !important; }
+
+  /* Sidebar becomes overlay */
+  .sidebar {
+    transform: translateX(-100%);
+    box-shadow: var(--shadow-xl);
+    z-index: 300;
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  .sidebar-overlay { display: none; }
+  .sidebar-overlay.show { display: block; }
+
+  .main-content { margin-left: 0 !important; }
+
+  /* Landing nav */
+  .land-nav-links { display: none; }
+  .land-mobile-menu { display: flex; }
+
+  /* Stats */
+  .stats-grid, .doctor-stat-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* content grids */
+  .content-grid,
+  .content-grid.thirds {
+    grid-template-columns: 1fr;
+  }
+
+  /* Page content padding */
+  .page-content { padding: 1.25rem; }
+}
+
+/* ── Mobile (320px - 767px) ── */
+@media (max-width: 767px) {
+  /* Typography scale down */
+  h1 { font-size: 1.9rem !important; }
+  h2 { font-size: 1.5rem !important; }
+
+  /* Stats single col */
+  .stats-grid, .doctor-stat-row { grid-template-columns: 1fr; }
+
+  /* Topbar */
+  .topbar { padding: 0 1rem; }
+  .topbar .search-bar { display: none; }
+
+  /* Page */
+  .page-content { padding: 1rem; }
+
+  /* Landing */
+  .land-hero { text-align: center; padding-block: 5rem 3rem; }
+  .land-hero-btns { justify-content: center; }
+  .land-features-grid { grid-template-columns: 1fr 1fr; }
+  .land-how-grid { grid-template-columns: 1fr; }
+  .land-footer-cols { grid-template-columns: 1fr 1fr; }
+
+  /* Auth */
+  .auth-form-wrap { padding: 0; }
+
+  /* Chat layout single col */
+  .chat-layout { grid-template-columns: 1fr; height: auto; }
+  .chat-sidebar { display: none; }
+  .chat-messages { min-height: 350px; }
+
+  /* History filters */
+  .history-filters { flex-direction: column; }
+  .history-filters .search-bar { max-width: 100%; }
+
+  /* Profile form */
+  .profile-form-grid { grid-template-columns: 1fr; }
+
+  /* Patient cards */
+  .patient-cards-grid { grid-template-columns: 1fr; }
+
+  /* Table scroll */
+  .table-wrap { font-size: .8rem; }
+  .table th, .table td { padding: .65rem .75rem; }
+
+  /* Upload */
+  .upload-zone { padding: 2rem 1.25rem; }
+
+  /* Settings row stacks */
+  .settings-row { flex-direction: column; align-items: flex-start; }
+
+  /* Modal */
+  .modal { border-radius: var(--radius-lg); }
+  .modal-overlay { align-items: flex-end; padding: 0; }
+  .modal-overlay .modal { border-radius: var(--radius-xl) var(--radius-xl) 0 0; }
+}
+
+/* ── Small Mobile (320px - 399px) ── */
+@media (max-width: 399px) {
+  .role-selector { grid-template-columns: 1fr; }
+  .land-features-grid { grid-template-columns: 1fr; }
+  .land-footer-cols { grid-template-columns: 1fr; }
+  .toast { min-width: auto; }
+  .patient-card-stats { grid-template-columns: 1fr; }
+}
+
+/* ── Print ── */
+@media print {
+  .sidebar, .topbar, .sidebar-overlay, .toast-container { display: none !important; }
+  .main-content { margin-left: 0 !important; }
+  .page-content { padding: 0; }
+  body { background: white; }
+}
+
+/* ── High contrast / Accessibility ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+/* ── Focus visible ── */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Scrollable horizontal on small ── */
+@media (max-width: 600px) {
+  .chart-bars { gap: .25rem; }
+}

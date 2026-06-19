@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="MediDiagnose — AI-powered medical diagnosis platform. Upload reports, get instant AI analysis, and connect with doctors." />
+  <title>MediDiagnose — AI Medical Diagnosis Platform</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* ── Landing-specific styles ── */
+    .land-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 70px;
+      display: flex; align-items: center;
+      transition: background var(--transition), box-shadow var(--transition);
+      padding: 0 clamp(1rem, 5vw, 3rem);
+    }
+    .land-nav.scrolled {
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 2px 20px rgba(0,0,0,.06);
+    }
+    body.dark .land-nav.scrolled { background: rgba(15,23,42,.92); }
+    .land-nav-brand { display: flex; align-items: center; gap: .6rem; text-decoration: none; margin-right: auto; }
+    .land-nav-logo {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 11px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.15rem; color: #fff;
+    }
+    .land-nav-name {
+      font-family: var(--font-display); font-size: 1.15rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .land-nav-links { display: flex; align-items: center; gap: .25rem; margin-right: 1rem; }
+    .land-nav-link { padding: .45rem .85rem; border-radius: var(--radius-full); font-size: .875rem; font-weight: 500; color: var(--text-muted); transition: all var(--transition); text-decoration: none; }
+    .land-nav-link:hover { color: var(--primary); background: var(--primary-light); }
+    .land-mobile-menu { display: none; color: var(--text); font-size: 1.2rem; padding: .4rem; }
+
+    /* ── Hero ── */
+    .land-hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 7rem clamp(1rem, 5vw, 3rem) 4rem;
+      background: linear-gradient(135deg, #EFF6FF 0%, #F8FAFC 50%, #EFF6FF 100%);
+      position: relative; overflow: hidden;
+    }
+    body.dark .land-hero { background: linear-gradient(135deg, #0F172A, #1E293B); }
+    .land-hero::before {
+      content: '';
+      position: absolute; top: -200px; right: -150px;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(37,99,235,.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .land-hero::after {
+      content: '';
+      position: absolute; bottom: -100px; left: -100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(59,130,246,.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .land-hero-inner {
+      max-width: 1280px; margin: 0 auto; width: 100%;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
+      align-items: center; position: relative; z-index: 1;
+    }
+    .land-hero-badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: var(--primary-light); color: var(--primary);
+      border: 1px solid rgba(37,99,235,.2);
+      padding: .35rem .85rem; border-radius: var(--radius-full);
+      font-size: .78rem; font-weight: 700; margin-bottom: 1.25rem;
+      animation: slideIn .5s ease;
+    }
+    .land-hero h1 {
+      background: linear-gradient(135deg, var(--text) 30%, var(--primary));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 1.25rem;
+      animation: slideUp .6s ease;
+    }
+    .land-hero-tagline {
+      font-size: 1.1rem; color: var(--text-muted); max-width: 500px;
+      margin-bottom: 2rem; line-height: 1.75;
+      animation: slideUp .6s ease .1s both;
+    }
+    .land-hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; animation: slideUp .6s ease .2s both; }
+    .land-hero-stats {
+      display: flex; gap: 2rem; margin-top: 2.5rem;
+      animation: slideUp .6s ease .3s both;
+    }
+    .hero-stat-val { font-size: 1.6rem; font-weight: 800; font-family: var(--font-display); color: var(--text); }
+    .hero-stat-label { font-size: .78rem; color: var(--text-muted); }
+
+    /* Hero illustration */
+    .land-hero-visual {
+      display: flex; align-items: center; justify-content: center;
+      animation: scaleIn .7s ease .2s both;
+    }
+    .hero-card-stack { position: relative; width: 380px; height: 380px; }
+    .hero-bg-circle {
+      width: 340px; height: 340px;
+      background: linear-gradient(135deg, var(--primary-light), #DBEAFE);
+      border-radius: 50%; position: absolute; top: 20px; left: 20px;
+    }
+    body.dark .hero-bg-circle { background: linear-gradient(135deg, #1e3a5f, #1e293b); }
+    .hero-medical-card {
+      position: absolute;
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      padding: 1rem 1.25rem;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-12px); }
+    }
+    .hero-main-card { top: 50px; left: 30px; width: 280px; animation-delay: 0s; }
+    .hero-mini-card-1 { bottom: 80px; right: 20px; width: 160px; animation-delay: .5s; }
+    .hero-mini-card-2 { top: 30px; right: 10px; width: 140px; animation-delay: 1s; }
+    .card-label { font-size: .7rem; color: var(--text-muted); margin-bottom: .3rem; }
+    .card-val { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+
+    /* ── Features ── */
+    .land-section {
+      padding: 5rem clamp(1rem,5vw,3rem);
+    }
+    .land-section-header { text-align: center; max-width: 600px; margin: 0 auto 3.5rem; }
+    .land-section-tag {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: var(--primary-light); color: var(--primary);
+      padding: .3rem .8rem; border-radius: var(--radius-full);
+      font-size: .75rem; font-weight: 700; margin-bottom: .85rem;
+    }
+    .land-section-header h2 { margin-bottom: .75rem; }
+
+    .land-features-grid {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;
+    }
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem 1.5rem;
+      text-align: center;
+      transition: all var(--transition);
+    }
+    .feature-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: var(--primary); }
+    .feature-icon {
+      width: 64px; height: 64px;
+      background: var(--primary-light);
+      border-radius: var(--radius-lg);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.75rem; margin: 0 auto 1.25rem;
+      transition: transform var(--transition);
+    }
+    .feature-card:hover .feature-icon { transform: scale(1.12) rotate(-5deg); }
+    .feature-card h4 { font-size: 1rem; margin-bottom: .5rem; }
+    .feature-card p { font-size: .85rem; }
+
+    /* ── How it works ── */
+    .land-how { background: var(--surface-2); }
+    .land-how-grid {
+      max-width: 1000px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;
+    }
+    .how-step {
+      text-align: center;
+      position: relative;
+    }
+    .how-step:not(:last-child)::after {
+      content: '→';
+      position: absolute;
+      right: -1rem; top: 2rem;
+      font-size: 1.5rem; color: var(--primary);
+    }
+    .how-number {
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; font-weight: 800;
+      margin: 0 auto 1.25rem;
+      box-shadow: 0 8px 24px rgba(37,99,235,.35);
+    }
+    .how-step h4 { font-size: 1rem; margin-bottom: .5rem; }
+
+    /* ── CTA ── */
+    .land-cta {
+      background: linear-gradient(135deg, var(--primary) 0%, #1D4ED8 50%, #1E40AF 100%);
+      color: #fff;
+      text-align: center;
+      padding: 5rem 2rem;
+      position: relative; overflow: hidden;
+    }
+    .land-cta::before {
+      content: '';
+      position: absolute; top: -100px; left: -100px;
+      width: 400px; height: 400px;
+      background: rgba(255,255,255,.05); border-radius: 50%;
+    }
+    .land-cta h2 { color: #fff; margin-bottom: .75rem; }
+    .land-cta p  { opacity: .85; margin-bottom: 2rem; font-size: 1.05rem; color: #fff; }
+    .land-cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-white { background: #fff; color: var(--primary); }
+    .btn-white:hover { background: #EFF6FF; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.2); }
+
+    /* ── Footer ── */
+    .land-footer {
+      background: var(--text);
+      color: #94A3B8;
+      padding: 3rem clamp(1rem, 5vw, 3rem) 1.5rem;
+    }
+    body.dark .land-footer { background: #0F172A; }
+    .land-footer-top {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+      margin-bottom: 1.5rem;
+    }
+    .footer-brand-name { font-family: var(--font-display); font-size: 1.1rem; font-weight: 800; color: #fff; margin-bottom: .5rem; }
+    .footer-brand-desc { font-size: .85rem; line-height: 1.6; }
+    .footer-col-title { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: #fff; margin-bottom: .85rem; }
+    .footer-link { display: block; font-size: .85rem; color: #94A3B8; margin-bottom: .5rem; text-decoration: none; transition: color var(--transition); }
+    .footer-link:hover { color: #fff; }
+    .land-footer-bottom {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: .8rem; flex-wrap: wrap; gap: .5rem;
+    }
+    @media (max-width: 900px) {
+      .land-hero-inner { grid-template-columns: 1fr; text-align: center; gap: 2rem; }
+      .land-hero-visual { display: none; }
+      .land-features-grid { grid-template-columns: 1fr 1fr; }
+      .land-how-grid { grid-template-columns: 1fr; }
+      .how-step::after { display: none; }
+      .land-footer-top { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .land-features-grid { grid-template-columns: 1fr; }
+      .land-footer-top { grid-template-columns: 1fr; }
+      .land-footer-bottom { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <!-- ── Navigation ── -->
+  <nav class="land-nav" id="landNav">
+    <a href="index.html" class="land-nav-brand">
+      <div class="land-nav-logo">🏥</div>
+      <span class="land-nav-name">MediDiagnose</span>
+    </a>
+    <div class="land-nav-links">
+      <a href="#features"  class="land-nav-link">Features</a>
+      <a href="#how"       class="land-nav-link">How It Works</a>
+      <a href="#about"     class="land-nav-link">About</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:.5rem">
+      <button class="dark-toggle" data-theme-toggle title="Toggle dark mode">
+        <span data-theme-icon>🌙</span>
+      </button>
+      <a href="login.html"  class="btn btn-outline btn-sm">Log In</a>
+      <a href="signup.html" class="btn btn-primary btn-sm">Get Started</a>
+    </div>
+    <button class="land-mobile-menu btn btn-icon" id="mobileMenuBtn">☰</button>
+  </nav>
+
+  <!-- ── Hero ── -->
+  <section class="land-hero" id="hero">
+    <div class="land-hero-inner">
+      <div class="land-hero-content">
+        <div class="land-hero-badge">✨ AI-Powered Medical Intelligence</div>
+        <h1>Smarter Medical Diagnosis, Faster Recovery</h1>
+        <p class="land-hero-tagline">
+          Upload your medical reports, get instant AI-powered analysis, and connect with qualified doctors — all in one secure platform.
+        </p>
+        <div class="land-hero-btns">
+          <a href="signup.html" class="btn btn-primary btn-xl">Get Started Free →</a>
+          <a href="login.html"  class="btn btn-outline btn-xl">Sign In</a>
+        </div>
+        <div class="land-hero-stats">
+          <div>
+            <div class="hero-stat-val">50K+</div>
+            <div class="hero-stat-label">Reports Analyzed</div>
+          </div>
+          <div>
+            <div class="hero-stat-val">99.2%</div>
+            <div class="hero-stat-label">Accuracy Rate</div>
+          </div>
+          <div>
+            <div class="hero-stat-val">2.5K+</div>
+            <div class="hero-stat-label">Doctors</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Visual -->
+      <div class="land-hero-visual">
+        <div class="hero-card-stack">
+          <div class="hero-bg-circle"></div>
+
+          <!-- Main card -->
+          <div class="hero-medical-card hero-main-card">
+            <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.85rem">
+              <div style="width:36px;height:36px;background:var(--primary-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem">🤖</div>
+              <div>
+                <div style="font-size:.75rem;font-weight:700;color:var(--text)">AI Diagnosis</div>
+                <div style="font-size:.65rem;color:var(--success);display:flex;align-items:center;gap:.25rem">● Active</div>
+              </div>
+            </div>
+            <div style="background:var(--surface-2);border-radius:var(--radius);padding:.65rem;margin-bottom:.5rem;font-size:.75rem;color:var(--text-muted)">
+              📄 Blood_Test_Report.pdf
+            </div>
+            <div style="font-size:.72rem;color:var(--text);margin-bottom:.4rem;font-weight:600">Analysis Result</div>
+            <div style="background:var(--success-light);border-radius:var(--radius);padding:.5rem .65rem;font-size:.72rem;color:var(--success)">
+              ✅ Hemoglobin levels slightly low. Iron supplementation recommended.
+            </div>
+          </div>
+
+          <!-- Mini card 1 -->
+          <div class="hero-medical-card hero-mini-card-1">
+            <div class="card-label">Reports Analyzed</div>
+            <div class="card-val" style="color:var(--primary)">1,247</div>
+            <div style="font-size:.65rem;color:var(--success)">↑ +12 today</div>
+          </div>
+
+          <!-- Mini card 2 -->
+          <div class="hero-medical-card hero-mini-card-2">
+            <div style="font-size:1.5rem;text-align:center">🩺</div>
+            <div style="font-size:.72rem;font-weight:600;text-align:center;color:var(--text)">Dr. Sarah</div>
+            <div style="font-size:.65rem;color:var(--success);text-align:center">● Online</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Features ── -->
+  <section class="land-section" id="features">
+    <div class="land-section-header">
+      <div class="land-section-tag">🌟 Features</div>
+      <h2>Everything You Need for Medical Intelligence</h2>
+      <p>Comprehensive tools for patients and healthcare providers, powered by cutting-edge AI.</p>
+    </div>
+    <div class="land-features-grid stagger">
+      <div class="feature-card observe-anim">
+        <div class="feature-icon">🤖</div>
+        <h4>AI Diagnosis</h4>
+        <p>Advanced AI analyzes your medical reports instantly, providing detailed insights and recommendations.</p>
+      </div>
+      <div class="feature-card observe-anim">
+        <div class="feature-icon">🔒</div>
+        <h4>Secure Reports</h4>
+        <p>Your medical data is encrypted end-to-end, ensuring complete privacy and HIPAA-compliant security.</p>
+      </div>
+      <div class="feature-card observe-anim">
+        <div class="feature-icon">👨‍⚕️</div>
+        <h4>Doctor Access</h4>
+        <p>Qualified doctors can review AI analysis and provide expert medical opinions on your reports.</p>
+      </div>
+      <div class="feature-card observe-anim">
+        <div class="feature-icon">📊</div>
+        <h4>Medical Analytics</h4>
+        <p>Track your health trends over time with detailed charts and actionable medical insights.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── How it Works ── -->
+  <section class="land-section land-how" id="how">
+    <div class="land-section-header">
+      <div class="land-section-tag">🔬 Process</div>
+      <h2>How MediDiagnose Works</h2>
+      <p>Get AI-powered medical insights in three simple steps.</p>
+    </div>
+    <div class="land-how-grid">
+      <div class="how-step">
+        <div class="how-number">1</div>
+        <h4>Upload Report</h4>
+        <p>Securely upload your medical reports in PDF or TXT format with our drag-and-drop interface.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-number">2</div>
+        <h4>AI Analysis</h4>
+        <p>Our advanced AI engine processes and analyzes your report, identifying key medical indicators.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-number">3</div>
+        <h4>Receive Diagnosis</h4>
+        <p>Get a comprehensive diagnosis report with actionable recommendations from AI and doctors.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Testimonials ── -->
+  <section class="land-section" id="about">
+    <div class="land-section-header">
+      <div class="land-section-tag">💬 Testimonials</div>
+      <h2>Trusted by Thousands of Patients & Doctors</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;max-width:1000px;margin:0 auto" class="stagger">
+      <div class="card card-body">
+        <div style="font-size:1.25rem;margin-bottom:.75rem">⭐⭐⭐⭐⭐</div>
+        <p style="font-size:.875rem;margin-bottom:1rem">"MediDiagnose helped me understand my blood test results instantly. The AI explanations are incredibly clear and accurate!"</p>
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <div class="avatar-placeholder sm">AJ</div>
+          <div>
+            <div style="font-size:.875rem;font-weight:600;color:var(--text)">Alex Johnson</div>
+            <div style="font-size:.75rem;color:var(--text-muted)">Patient</div>
+          </div>
+        </div>
+      </div>
+      <div class="card card-body">
+        <div style="font-size:1.25rem;margin-bottom:.75rem">⭐⭐⭐⭐⭐</div>
+        <p style="font-size:.875rem;margin-bottom:1rem">"As a physician, this platform streamlines my patient consultations. The AI pre-analysis saves me significant time."</p>
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <div class="avatar-placeholder sm" style="background:linear-gradient(135deg,#10b981,#059669)">SC</div>
+          <div>
+            <div style="font-size:.875rem;font-weight:600;color:var(--text)">Dr. Sarah Chen</div>
+            <div style="font-size:.75rem;color:var(--text-muted)">Cardiologist</div>
+          </div>
+        </div>
+      </div>
+      <div class="card card-body">
+        <div style="font-size:1.25rem;margin-bottom:.75rem">⭐⭐⭐⭐⭐</div>
+        <p style="font-size:.875rem;margin-bottom:1rem">"The security features give me peace of mind. My medical data is safe, and the reports are always analyzed accurately."</p>
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <div class="avatar-placeholder sm" style="background:linear-gradient(135deg,#f59e0b,#d97706)">DK</div>
+          <div>
+            <div style="font-size:.875rem;font-weight:600;color:var(--text)">David Kim</div>
+            <div style="font-size:.75rem;color:var(--text-muted)">Patient</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+  <section class="land-cta">
+    <div style="position:relative;z-index:1">
+      <h2>Ready to Transform Your Healthcare Experience?</h2>
+      <p>Join over 50,000 patients and doctors using MediDiagnose today.</p>
+      <div class="land-cta-btns">
+        <a href="signup.html" class="btn btn-white btn-xl">Create Free Account</a>
+        <a href="login.html"  class="btn btn-xl" style="background:rgba(255,255,255,.12);color:#fff;border:2px solid rgba(255,255,255,.4)">Sign In →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer class="land-footer">
+    <div class="land-footer-top">
+      <div>
+        <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem">
+          <div class="land-nav-logo" style="width:34px;height:34px;font-size:1rem">🏥</div>
+          <div class="footer-brand-name">MediDiagnose</div>
+        </div>
+        <p class="footer-brand-desc">AI-powered medical diagnosis platform connecting patients with healthcare intelligence.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Product</div>
+        <a href="#features" class="footer-link">Features</a>
+        <a href="#how"      class="footer-link">How It Works</a>
+        <a href="login.html" class="footer-link">Login</a>
+        <a href="signup.html" class="footer-link">Sign Up</a>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <a href="#about"    class="footer-link">About Us</a>
+        <a href="#"         class="footer-link">Contact</a>
+        <a href="#"         class="footer-link">Blog</a>
+        <a href="#"         class="footer-link">Careers</a>
+      </div>
+      <div>
+        <div class="footer-col-title">Legal</div>
+        <a href="#" class="footer-link">Privacy Policy</a>
+        <a href="#" class="footer-link">Terms of Service</a>
+        <a href="#" class="footer-link">HIPAA Compliance</a>
+        <a href="#" class="footer-link">Cookie Policy</a>
+      </div>
+    </div>
+    <div class="land-footer-bottom">
+      <span>© 2024 MediDiagnose. All rights reserved.</span>
+      <span>Built with ❤️ for better healthcare</span>
+    </div>
+  </footer>
+
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="js/app.js"></script>
+  <script>
+    // Sticky nav
+    window.addEventListener('scroll', () => {
+      document.getElementById('landNav').classList.toggle('scrolled', window.scrollY > 20);
+    });
+
+    // Mobile menu (simple scroll to anchor)
+    document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
+      document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+      link.addEventListener('click', e => {
+        const target = document.querySelector(link.getAttribute('href'));
+        if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+      });
+    });
+  </script>
+</body>
+</html>

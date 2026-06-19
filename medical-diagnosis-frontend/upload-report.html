@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Upload Medical Reports — MediDiagnose" />
+  <title>Upload Report — MediDiagnose</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+<div class="layout">
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <a href="patient-dashboard.html" class="sidebar-brand">
+      <div class="sidebar-logo">🏥</div>
+      <span class="sidebar-brand-name">MediDiagnose</span>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-label">Main</div>
+        <a href="patient-dashboard.html" class="nav-link"><span class="nav-icon">📊</span> Dashboard</a>
+        <a href="upload-report.html"     class="nav-link active"><span class="nav-icon">📤</span> Upload Report</a>
+        <a href="diagnosis-chat.html"    class="nav-link"><span class="nav-icon">💬</span> Diagnosis Chat <span class="nav-badge">AI</span></a>
+        <a href="diagnosis-history.html" class="nav-link"><span class="nav-icon">📋</span> History</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Account</div>
+        <a href="profile.html"  class="nav-link"><span class="nav-icon">👤</span> Profile</a>
+        <a href="settings.html" class="nav-link"><span class="nav-icon">⚙️</span> Settings</a>
+        <a href="login.html"    class="nav-link" style="color:var(--danger)"><span class="nav-icon">🚪</span> Logout</a>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="avatar-placeholder md" data-user-avatar>AJ</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" data-user-name>Alex Johnson</div>
+          <div class="sidebar-user-role" data-user-role>Patient</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content" id="mainContent">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="sidebar-toggle btn" data-sidebar-toggle>☰</button>
+        <span class="topbar-page-title">Upload Report</span>
+      </div>
+      <div class="topbar-right">
+        <button class="notif-btn btn">🔔<span class="notif-dot"></span></button>
+        <button class="dark-toggle btn" data-theme-toggle><span data-theme-icon>🌙</span></button>
+        <a href="profile.html"><div class="avatar-placeholder sm" data-user-avatar>AJ</div></a>
+      </div>
+    </header>
+
+    <div class="page-content">
+      <div class="page-header">
+        <div class="breadcrumb">
+          <a href="patient-dashboard.html">Dashboard</a><span>›</span><span>Upload Report</span>
+        </div>
+        <h1 class="page-title">📤 Upload Medical Report</h1>
+        <p class="page-subtitle">Upload your medical reports for AI-powered analysis and diagnosis</p>
+      </div>
+
+      <div class="content-grid" style="grid-template-columns:1.5fr 1fr;align-items:start">
+        <!-- Upload Card -->
+        <div class="card card-body">
+          <h3 style="margin-bottom:1.5rem">Upload New Report</h3>
+
+          <!-- Drag & Drop Zone -->
+          <div class="upload-zone" id="uploadZone">
+            <input type="file" id="fileInput" accept=".pdf,.txt" aria-label="Upload medical report" />
+            <div class="upload-icon">📄</div>
+            <div class="upload-title">Drag & drop your report here</div>
+            <p class="upload-hint">or click to browse your files</p>
+            <div class="upload-types">
+              <span class="tag">📄 PDF</span>
+              <span class="tag">📝 TXT</span>
+            </div>
+            <p style="font-size:.75rem;color:var(--text-light);margin-top:.5rem">Maximum file size: 20MB</p>
+          </div>
+
+          <!-- File Preview -->
+          <div id="filePreview" class="hidden"></div>
+
+          <!-- Progress Bar -->
+          <div id="progressWrap" class="upload-progress-wrap hidden">
+            <div class="upload-progress-label">
+              <span>Uploading…</span>
+              <span id="progressPct">0%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progressFill" style="width:0%"></div>
+            </div>
+          </div>
+
+          <!-- Upload Button -->
+          <button id="uploadBtn" class="btn btn-primary btn-full btn-lg" style="margin-top:1.25rem" disabled>
+            📤 Upload Report
+          </button>
+
+          <!-- Tips -->
+          <div style="margin-top:1.5rem;padding:1rem;background:var(--primary-light);border-radius:var(--radius);border:1px solid rgba(37,99,235,.15)">
+            <div style="font-size:.8rem;font-weight:700;color:var(--primary);margin-bottom:.5rem">💡 Tips for best results:</div>
+            <ul style="font-size:.78rem;color:var(--text-muted);padding-left:1rem;line-height:1.7">
+              <li>Upload original, unedited reports for accurate analysis</li>
+              <li>PDF files from hospitals/labs work best</li>
+              <li>Ensure the file is readable and not password-protected</li>
+              <li>After upload, use AI Chat to ask specific questions</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Recent Uploads -->
+        <div class="card card-body">
+          <div class="section-header">
+            <span class="section-title">📋 Recent Uploads</span>
+            <a href="diagnosis-history.html" style="font-size:.8rem;color:var(--primary)">View all</a>
+          </div>
+          <div id="recentUploadsList">
+            <div class="file-card">
+              <div class="file-icon pdf">📄</div>
+              <div class="file-info">
+                <div class="file-name">Blood Test Report</div>
+                <div class="file-size">1.2 MB · Jun 10, 2024</div>
+              </div>
+              <span class="badge badge-success">Analyzed</span>
+            </div>
+            <div class="file-card">
+              <div class="file-icon pdf">📄</div>
+              <div class="file-info">
+                <div class="file-name">Chest X-Ray Analysis</div>
+                <div class="file-size">2.8 MB · Jun 8, 2024</div>
+              </div>
+              <span class="badge badge-warning">Pending</span>
+            </div>
+            <div class="file-card">
+              <div class="file-icon pdf">📄</div>
+              <div class="file-info">
+                <div class="file-name">MRI Scan Results</div>
+                <div class="file-size">5.1 MB · Jun 5, 2024</div>
+              </div>
+              <span class="badge badge-success">Analyzed</span>
+            </div>
+            <div class="file-card">
+              <div class="file-icon txt">📝</div>
+              <div class="file-info">
+                <div class="file-name">ECG Report</div>
+                <div class="file-size">0.8 MB · Jun 1, 2024</div>
+              </div>
+              <span class="badge badge-primary">Reviewed</span>
+            </div>
+          </div>
+
+          <!-- Usage stats -->
+          <div style="margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid var(--border)">
+            <div style="font-size:.8rem;font-weight:600;margin-bottom:.5rem;color:var(--text)">Storage Usage</div>
+            <div class="progress-bar" style="margin-bottom:.35rem">
+              <div class="progress-fill" style="width:42%"></div>
+            </div>
+            <div style="font-size:.72rem;color:var(--text-muted)">4.2 GB of 10 GB used (42%)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Supported formats info -->
+      <div class="card card-body" style="margin-top:1.25rem">
+        <h4 style="margin-bottom:1rem">📂 Supported File Formats</h4>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem">
+          <div style="display:flex;align-items:center;gap:.75rem;padding:.75rem;background:var(--surface-2);border-radius:var(--radius)">
+            <div class="file-icon pdf" style="width:40px;height:40px;font-size:1.1rem;flex-shrink:0">📄</div>
+            <div>
+              <div style="font-weight:600;font-size:.875rem">PDF Files</div>
+              <div style="font-size:.75rem;color:var(--text-muted)">Best for lab reports, imaging results</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:.75rem;padding:.75rem;background:var(--surface-2);border-radius:var(--radius)">
+            <div class="file-icon txt" style="width:40px;height:40px;font-size:1.1rem;flex-shrink:0">📝</div>
+            <div>
+              <div style="font-weight:600;font-size:.875rem">TXT Files</div>
+              <div style="font-size:.75rem;color:var(--text-muted)">Plain text reports and notes</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="toastContainer" class="toast-container"></div>
+<script src="js/app.js"></script>
+<script src="js/upload.js"></script>
+</body>
+</html>

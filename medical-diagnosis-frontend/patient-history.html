@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Patient Medical History — MediDiagnose" />
+  <title>Patient History — MediDiagnose</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+<div class="layout">
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <a href="doctor-dashboard.html" class="sidebar-brand">
+      <div class="sidebar-logo">🏥</div>
+      <span class="sidebar-brand-name">MediDiagnose</span>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-label">Doctor Portal</div>
+        <a href="doctor-dashboard.html" class="nav-link"><span class="nav-icon">📊</span> Dashboard</a>
+        <a href="patient-search.html"   class="nav-link"><span class="nav-icon">🔍</span> Search Patients</a>
+        <a href="patient-history.html"  class="nav-link active"><span class="nav-icon">📋</span> Patient Records</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Account</div>
+        <a href="profile.html"  class="nav-link"><span class="nav-icon">👤</span> Profile</a>
+        <a href="settings.html" class="nav-link"><span class="nav-icon">⚙️</span> Settings</a>
+        <a href="login.html"    class="nav-link" style="color:var(--danger)"><span class="nav-icon">🚪</span> Logout</a>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="avatar-placeholder md" style="background:linear-gradient(135deg,#10b981,#059669)">SC</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name">Dr. Sarah Chen</div>
+          <div class="sidebar-user-role">Doctor</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content" id="mainContent">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="sidebar-toggle btn" data-sidebar-toggle>☰</button>
+        <span class="topbar-page-title">Patient Medical History</span>
+      </div>
+      <div class="topbar-right">
+        <button class="notif-btn btn">🔔<span class="notif-dot"></span></button>
+        <button class="dark-toggle btn" data-theme-toggle><span data-theme-icon>🌙</span></button>
+        <a href="profile.html"><div class="avatar-placeholder sm" style="background:linear-gradient(135deg,#10b981,#059669)">SC</div></a>
+      </div>
+    </header>
+
+    <div class="page-content">
+      <div class="page-header">
+        <div class="breadcrumb">
+          <a href="doctor-dashboard.html">Doctor Portal</a>
+          <span>›</span>
+          <a href="patient-search.html">Patients</a>
+          <span>›</span>
+          <span>Medical History</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem">
+          <div>
+            <h1 class="page-title">📋 Patient Medical History</h1>
+            <p class="page-subtitle">Complete medical records and diagnosis timeline</p>
+          </div>
+          <div style="display:flex;gap:.75rem">
+            <button class="btn btn-outline btn-sm" onclick="Toast.info('Printing report…')">🖨️ Print</button>
+            <button class="btn btn-primary btn-sm" onclick="Toast.info('Exported PDF')">📥 Export</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Patient Info Card -->
+      <div class="profile-card" id="patientInfoCard" style="margin-bottom:1.5rem">
+        <div class="profile-cover" style="height:100px;background:linear-gradient(135deg,var(--primary),var(--secondary))"></div>
+        <div style="padding:0 1.75rem 1.5rem;margin-top:-2.25rem">
+          <div style="display:flex;align-items:flex-end;gap:1rem;margin-bottom:1rem">
+            <div class="avatar-placeholder xl" style="border:4px solid var(--surface);background:linear-gradient(135deg,#2563EB,#3B82F6)">AJ</div>
+            <div style="padding-bottom:.5rem">
+              <h3 data-patient-name>Alex Johnson</h3>
+              <div style="color:var(--text-muted);font-size:.875rem">
+                <span data-patient-email>alex.johnson@email.com</span>
+                &nbsp;·&nbsp;
+                <span data-patient-username>@alexj</span>
+              </div>
+              <span class="badge badge-success" style="margin-top:.4rem">Active Patient</span>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem">
+            <div style="text-align:center;padding:.75rem;background:var(--surface-2);border-radius:var(--radius)">
+              <div style="font-size:1.5rem;font-weight:800;color:var(--primary)" data-patient-reports>6</div>
+              <div style="font-size:.75rem;color:var(--text-muted)">Reports Uploaded</div>
+            </div>
+            <div style="text-align:center;padding:.75rem;background:var(--surface-2);border-radius:var(--radius)">
+              <div style="font-size:1.5rem;font-weight:800;color:var(--success)" data-patient-diagnoses>4</div>
+              <div style="font-size:.75rem;color:var(--text-muted)">Diagnoses</div>
+            </div>
+            <div style="text-align:center;padding:.75rem;background:var(--surface-2);border-radius:var(--radius)">
+              <div style="font-size:1.5rem;font-weight:800;color:var(--warning)">2</div>
+              <div style="font-size:.75rem;color:var(--text-muted)">Doctor Reviews</div>
+            </div>
+            <div style="text-align:center;padding:.75rem;background:var(--surface-2);border-radius:var(--radius)">
+              <div style="font-size:1.5rem;font-weight:800;color:var(--text)">Jan 2024</div>
+              <div style="font-size:.75rem;color:var(--text-muted)">Member Since</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-grid" style="grid-template-columns:1fr 1fr;align-items:start">
+        <!-- Diagnosis Timeline -->
+        <div class="card card-body">
+          <div class="section-header">
+            <span class="section-title">🕐 Diagnosis Timeline</span>
+            <span class="badge badge-primary">4 records</span>
+          </div>
+          <div class="timeline" id="diagnosisTimeline">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Uploaded Reports -->
+        <div class="card card-body">
+          <div class="section-header">
+            <span class="section-title">📄 Uploaded Reports</span>
+            <span class="badge badge-gray">6 files</span>
+          </div>
+          <div id="patientReportsList">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Diagnosis Records -->
+      <div class="card" style="margin-top:1.25rem">
+        <div class="card-header">
+          <span class="section-title">🔬 Diagnosis Records</span>
+          <button class="btn btn-ghost btn-sm" onclick="Toast.info('Filtered')">Filter</button>
+        </div>
+        <div style="display:grid;gap:1rem;padding:1.25rem">
+          <div class="card card-body" style="border-color:var(--success);background:var(--success-light)">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem">
+              <div>
+                <div style="font-weight:700;font-size:.95rem">ECG Report — Cardiac Analysis</div>
+                <div style="font-size:.75rem;color:var(--text-muted)">June 1, 2024 · 11:00 AM</div>
+              </div>
+              <span class="badge badge-success">Normal</span>
+            </div>
+            <p style="font-size:.85rem;color:var(--text);line-height:1.6">ECG shows sinus rhythm with a heart rate of 72 bpm. All intervals within normal limits. No acute cardiac findings.</p>
+            <div style="display:flex;gap:.4rem;margin-top:.75rem">
+              <span class="tag">Cardiology</span><span class="tag">ECG</span>
+            </div>
+          </div>
+          <div class="card card-body" style="border-color:var(--warning)">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem">
+              <div>
+                <div style="font-weight:700;font-size:.95rem">Blood Test — Hemoglobin Analysis</div>
+                <div style="font-size:.75rem;color:var(--text-muted)">June 10, 2024 · 9:30 AM</div>
+              </div>
+              <span class="badge badge-warning">Moderate</span>
+            </div>
+            <p style="font-size:.85rem;color:var(--text);line-height:1.6">Hemoglobin at 11.5 g/dL indicates mild iron-deficiency anemia. Iron supplementation and dietary changes recommended.</p>
+            <div style="display:flex;gap:.4rem;margin-top:.75rem">
+              <span class="tag">Hematology</span><span class="tag">Anemia</span>
+            </div>
+            <div style="margin-top:.85rem;padding:.6rem;background:var(--surface);border-radius:var(--radius);font-size:.78rem;color:var(--text-muted)">
+              👨‍⚕️ <strong>Doctor's Note:</strong> Patient advised to start iron supplements 65mg daily. Follow-up in 8 weeks.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="toastContainer" class="toast-container"></div>
+<script src="js/app.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>
