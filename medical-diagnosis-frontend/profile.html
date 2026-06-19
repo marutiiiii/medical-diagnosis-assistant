@@ -81,16 +81,16 @@
           <input type="file" id="avatarInput" accept="image/*" class="hidden" />
 
           <div style="margin-top:.75rem">
-            <h2 class="profile-name" data-user-name>Alex Johnson</h2>
+            <h2 class="profile-name" data-user-name></h2>
             <div class="profile-meta">
-              <div class="profile-meta-item">📧 <span data-user-email>alex.johnson@email.com</span></div>
-              <div class="profile-meta-item">👤 <span data-user-role>Patient</span></div>
-              <div class="profile-meta-item">📅 Joined January 2024</div>
+              <div class="profile-meta-item">📧 <span data-user-email></span></div>
+              <div class="profile-meta-item">👤 <span data-user-role></span></div>
+              <div class="profile-meta-item">📅 Joined <span id="profileJoinedDate">—</span></div>
             </div>
             <div style="display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap">
               <span class="badge badge-success">✅ Verified Account</span>
-              <span class="badge badge-primary">🔬 6 Reports Uploaded</span>
-              <span class="badge badge-gray">4 Diagnoses</span>
+              <span class="badge badge-primary" id="profileReportsBadge">🔬 0 Reports Uploaded</span>
+              <span class="badge badge-gray" id="profileDxBadge">0 Diagnoses</span>
             </div>
           </div>
         </div>
@@ -160,19 +160,19 @@
             <h4 style="margin-bottom:1rem">📊 Account Overview</h4>
             <div class="info-row">
               <span class="info-label">Member Since</span>
-              <span class="info-value">January 15, 2024</span>
+              <span class="info-value" id="infoMemberSince">—</span>
             </div>
             <div class="info-row">
               <span class="info-label">Reports</span>
-              <span class="info-value">6 uploaded</span>
+              <span class="info-value" id="infoReports">0 uploaded</span>
             </div>
             <div class="info-row">
               <span class="info-label">Diagnoses</span>
-              <span class="info-value">4 generated</span>
+              <span class="info-value" id="infoDiagnoses">0 generated</span>
             </div>
             <div class="info-row">
               <span class="info-label">Last Login</span>
-              <span class="info-value">Today, 9:30 AM</span>
+              <span class="info-value" id="infoLastLogin">—</span>
             </div>
             <div class="info-row">
               <span class="info-label">Account Status</span>

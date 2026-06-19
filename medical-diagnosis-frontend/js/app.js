@@ -5,6 +5,9 @@
 
 'use strict';
 
+/* ── API Base URL ── */
+const API_BASE = 'http://127.0.0.1:5000/api';
+
 /* ── Theme ── */
 const ThemeManager = (() => {
   const KEY = 'medi-theme';
@@ -252,45 +255,94 @@ function showSkeleton(container, rows = 3) {
   `).join('');
 }
 
-/* ── Mock User Session ── */
+/* ── Session — reads from JWT stored in localStorage ── */
 const Session = (() => {
-  const KEY = 'medi-user';
+  const TOKEN_KEY = 'medi-token';
+  const USER_KEY  = 'medi-user';
 
-  const defaultUser = {
-    id: 'p001',
-    name: 'Alex Johnson',
-    email: 'alex.johnson@email.com',
-    username: 'alexj',
-    role: 'patient',
-    avatar: null,
-    joined: '2024-01-15'
-  };
-
-  function get() {
-    try {
-      return JSON.parse(localStorage.getItem(KEY)) || defaultUser;
-    } catch { return defaultUser; }
+  function getToken() {
+    return localStorage.getItem(TOKEN_KEY) || null;
   }
 
-  function set(user) {
-    localStorage.setItem(KEY, JSON.stringify(user));
+  function getUser() {
+    try {
+      return JSON.parse(localStorage.getItem(USER_KEY)) || null;
+    } catch { return null; }
+  }
+
+  function setToken(token) {
+    localStorage.setItem(TOKEN_KEY, token);
+  }
+
+  function setUser(user) {
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
+  }
+
+  function clear() {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+  }
+
+  function isLoggedIn() {
+    return !!getToken() && !!getUser();
+  }
+
+  function requireAuth() {
+    if (!isLoggedIn()) {
+      window.location.href = 'login.html';
+    }
   }
 
   function initUI() {
-    const user = get();
-    // Fill user name/role in sidebar
-    document.querySelectorAll('[data-user-name]').forEach(el => el.textContent = user.name);
-    document.querySelectorAll('[data-user-role]').forEach(el => el.textContent = user.role);
-    document.querySelectorAll('[data-user-email]').forEach(el => el.textContent = user.email);
+    const user = getUser();
+    if (!user) return;
 
-    // Avatar initials
+    const initials = (user.full_name || user.name || '')
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .toUpperCase() || '?';
+
+    document.querySelectorAll('[data-user-name]').forEach(el => {
+      el.textContent = user.full_name || user.name || '';
+    });
+    document.querySelectorAll('[data-user-role]').forEach(el => {
+      const role = user.role || '';
+      el.textContent = role.charAt(0).toUpperCase() + role.slice(1);
+    });
+    document.querySelectorAll('[data-user-email]').forEach(el => {
+      el.textContent = user.email || '';
+    });
     document.querySelectorAll('[data-user-avatar]').forEach(el => {
-      const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
       el.textContent = initials;
     });
   }
 
-  return { get, set, initUI };
+  /* Fetch profile from backend and refresh stored user */
+  async function syncProfile() {
+    const token = getToken();
+    if (!token) return null;
+    try {
+      const res = await fetch(`${API_BASE}/auth/profile`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) {
+        if (res.status === 401) { clear(); window.location.href = 'login.html'; }
+        return null;
+      }
+      const json = await res.json();
+      if (json.success && json.data) {
+        setUser(json.data);
+        initUI();
+        return json.data;
+      }
+    } catch (e) {
+      console.error('Profile sync failed:', e);
+    }
+    return null;
+  }
+
+  return { getToken, getUser, setToken, setUser, clear, isLoggedIn, requireAuth, initUI, syncProfile };
 })();
 
 /* ── Pagination ── */

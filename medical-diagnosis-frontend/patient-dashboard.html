@@ -92,8 +92,8 @@
           <span>›</span>
           <span>Overview</span>
         </div>
-        <h1 class="page-title">Good morning, <span data-user-name>Alex</span> 👋</h1>
-        <p class="page-subtitle">Here's your health overview for today, June 16, 2024</p>
+        <h1 class="page-title">Good morning, <span data-user-name></span> 👋</h1>
+        <p class="page-subtitle">Here's your health overview for today</p>
       </div>
 
       <!-- Stats Cards -->
@@ -102,31 +102,31 @@
           <div class="stat-icon blue">📄</div>
           <div class="stat-info">
             <div class="stat-label">Uploaded Reports</div>
-            <div class="stat-value">6</div>
-            <div class="stat-change">↑ +2 this month</div>
+            <div class="stat-value" id="statReports">—</div>
+            <div class="stat-change">Total uploaded</div>
           </div>
         </div>
         <div class="stat-card">
           <div class="stat-icon green">🔬</div>
           <div class="stat-info">
             <div class="stat-label">Diagnoses Generated</div>
-            <div class="stat-value">4</div>
-            <div class="stat-change">↑ +1 this week</div>
+            <div class="stat-value" id="statDiagnoses">—</div>
+            <div class="stat-change">All time</div>
           </div>
         </div>
         <div class="stat-card">
           <div class="stat-icon yellow">👨‍⚕️</div>
           <div class="stat-info">
             <div class="stat-label">Doctor Reviews</div>
-            <div class="stat-value">2</div>
-            <div class="stat-change">Last: 2 days ago</div>
+            <div class="stat-value" id="statReviews">—</div>
+            <div class="stat-change">Completed</div>
           </div>
         </div>
         <div class="stat-card">
           <div class="stat-icon red">⚠️</div>
           <div class="stat-info">
             <div class="stat-label">Pending Reviews</div>
-            <div class="stat-value">2</div>
+            <div class="stat-value" id="statPending">—</div>
             <div class="stat-change down">Needs attention</div>
           </div>
         </div>

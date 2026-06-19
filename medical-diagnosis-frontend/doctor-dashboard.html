@@ -35,10 +35,10 @@
     </nav>
     <div class="sidebar-footer">
       <div class="sidebar-user">
-        <div class="avatar-placeholder md" style="background:linear-gradient(135deg,#10b981,#059669)">SC</div>
+        <div class="avatar-placeholder md" data-user-avatar style="background:linear-gradient(135deg,#10b981,#059669)">--</div>
         <div class="sidebar-user-info">
-          <div class="sidebar-user-name">Dr. Sarah Chen</div>
-          <div class="sidebar-user-role">Doctor · Cardiologist</div>
+          <div class="sidebar-user-name" data-user-name>Loading…</div>
+          <div class="sidebar-user-role" data-user-role>Doctor</div>
         </div>
       </div>
     </div>
@@ -57,7 +57,7 @@
         </div>
         <button class="notif-btn btn">🔔<span class="notif-dot"></span></button>
         <button class="dark-toggle btn" data-theme-toggle><span data-theme-icon>🌙</span></button>
-        <a href="profile.html"><div class="avatar-placeholder sm" style="background:linear-gradient(135deg,#10b981,#059669)">SC</div></a>
+        <a href="profile.html"><div class="avatar-placeholder sm" data-user-avatar style="background:linear-gradient(135deg,#10b981,#059669)">--</div></a>
       </div>
     </header>
 
@@ -66,7 +66,7 @@
         <div class="breadcrumb">
           <a href="doctor-dashboard.html">Doctor Portal</a><span>›</span><span>Overview</span>
         </div>
-        <h1 class="page-title">Good morning, Dr. Chen 👨‍⚕️</h1>
+        <h1 class="page-title">Good morning, Dr. <span data-user-name>...</span> 👨‍⚕️</h1>
         <p class="page-subtitle">Here's your clinical overview for today</p>
       </div>
 
@@ -76,31 +76,31 @@
           <div class="stat-icon blue">👥</div>
           <div class="stat-info">
             <div class="stat-label">Total Patients</div>
-            <div class="stat-value">284</div>
-            <div class="stat-change">↑ +12 this month</div>
+            <div class="stat-value" id="statTotalPatients">—</div>
+            <div class="stat-change">Registered patients</div>
           </div>
         </div>
         <div class="stat-card">
           <div class="stat-icon green">✅</div>
           <div class="stat-info">
             <div class="stat-label">Diagnoses Reviewed</div>
-            <div class="stat-value">1,842</div>
-            <div class="stat-change">↑ +38 this week</div>
+            <div class="stat-value" id="statDiagnosesReviewed">—</div>
+            <div class="stat-change">All time</div>
           </div>
         </div>
         <div class="stat-card">
           <div class="stat-icon yellow">📄</div>
           <div class="stat-info">
             <div class="stat-label">Reports Reviewed</div>
-            <div class="stat-value">956</div>
-            <div class="stat-change">↑ +14 today</div>
+            <div class="stat-value" id="statReportsReviewed">—</div>
+            <div class="stat-change">All time</div>
           </div>
         </div>
         <div class="stat-card">
           <div class="stat-icon red">🔴</div>
           <div class="stat-info">
             <div class="stat-label">Active Patients</div>
-            <div class="stat-value">47</div>
+            <div class="stat-value" id="statActivePatients">—</div>
             <div class="stat-change">Pending reviews</div>
           </div>
         </div>
@@ -147,67 +147,8 @@
                   <th></th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <div style="display:flex;align-items:center;gap:.6rem">
-                      <div class="avatar-placeholder sm">AJ</div>
-                      <div>
-                        <div style="font-weight:600">Alex Johnson</div>
-                        <div style="font-size:.72rem;color:var(--text-muted)">alex@email.com</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>6</td>
-                  <td>Today</td>
-                  <td><span class="badge badge-success">Active</span></td>
-                  <td><a href="patient-history.html" class="btn btn-ghost btn-sm" style="color:var(--primary)">View</a></td>
-                </tr>
-                <tr>
-                  <td>
-                    <div style="display:flex;align-items:center;gap:.6rem">
-                      <div class="avatar-placeholder sm" style="background:linear-gradient(135deg,#f59e0b,#d97706)">MS</div>
-                      <div>
-                        <div style="font-weight:600">Maria Santos</div>
-                        <div style="font-size:.72rem;color:var(--text-muted)">maria@email.com</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>3</td>
-                  <td>Yesterday</td>
-                  <td><span class="badge badge-success">Active</span></td>
-                  <td><a href="patient-history.html" class="btn btn-ghost btn-sm" style="color:var(--primary)">View</a></td>
-                </tr>
-                <tr>
-                  <td>
-                    <div style="display:flex;align-items:center;gap:.6rem">
-                      <div class="avatar-placeholder sm" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed)">DK</div>
-                      <div>
-                        <div style="font-weight:600">David Kim</div>
-                        <div style="font-size:.72rem;color:var(--text-muted)">david@email.com</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>8</td>
-                  <td>2 days ago</td>
-                  <td><span class="badge badge-warning">Pending</span></td>
-                  <td><a href="patient-history.html" class="btn btn-ghost btn-sm" style="color:var(--primary)">View</a></td>
-                </tr>
-                <tr>
-                  <td>
-                    <div style="display:flex;align-items:center;gap:.6rem">
-                      <div class="avatar-placeholder sm" style="background:linear-gradient(135deg,#ec4899,#be185d)">EW</div>
-                      <div>
-                        <div style="font-weight:600">Emma Wilson</div>
-                        <div style="font-size:.72rem;color:var(--text-muted)">emma@email.com</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>2</td>
-                  <td>5 days ago</td>
-                  <td><span class="badge badge-gray">Inactive</span></td>
-                  <td><a href="patient-history.html" class="btn btn-ghost btn-sm" style="color:var(--primary)">View</a></td>
-                </tr>
+              <tbody id="recentPatientsBody">
+                <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted)">Loading patients…</td></tr>
               </tbody>
             </table>
           </div>
@@ -217,36 +158,10 @@
         <div class="card card-body">
           <div class="section-header">
             <span class="section-title">⚠️ Pending Reviews</span>
-            <span class="badge badge-danger">3 urgent</span>
+            <span class="badge badge-danger" id="pendingReviewsBadge">0 urgent</span>
           </div>
-          <div class="activity-list">
-            <div class="activity-item">
-              <div class="activity-dot red">⚠️</div>
-              <div class="activity-info">
-                <div class="activity-title">Alex Johnson · UTI Report</div>
-                <div class="activity-desc">Elevated WBC count detected — review needed</div>
-                <div class="activity-time">2 hours ago</div>
-              </div>
-              <a href="patient-history.html" class="btn btn-danger btn-sm">Review</a>
-            </div>
-            <div class="activity-item">
-              <div class="activity-dot yellow">📄</div>
-              <div class="activity-info">
-                <div class="activity-title">David Kim · Blood Test</div>
-                <div class="activity-desc">Cholesterol levels flagged by AI</div>
-                <div class="activity-time">5 hours ago</div>
-              </div>
-              <a href="patient-history.html" class="btn btn-outline btn-sm">Review</a>
-            </div>
-            <div class="activity-item">
-              <div class="activity-dot blue">🔬</div>
-              <div class="activity-info">
-                <div class="activity-title">Sophie Turner · MRI Scan</div>
-                <div class="activity-desc">Routine scan ready for doctor review</div>
-                <div class="activity-time">1 day ago</div>
-              </div>
-              <a href="patient-history.html" class="btn btn-ghost btn-sm">Review</a>
-            </div>
+          <div class="activity-list" id="pendingReviewsList">
+            <div style="text-align:center;padding:1.5rem;color:var(--text-muted)">No pending reviews.</div>
           </div>
         </div>
       </div>

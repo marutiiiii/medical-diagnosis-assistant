@@ -34,10 +34,10 @@
     </nav>
     <div class="sidebar-footer">
       <div class="sidebar-user">
-        <div class="avatar-placeholder md" style="background:linear-gradient(135deg,#10b981,#059669)">SC</div>
+        <div class="avatar-placeholder md" data-user-avatar style="background:linear-gradient(135deg,#10b981,#059669)">--</div>
         <div class="sidebar-user-info">
-          <div class="sidebar-user-name">Dr. Sarah Chen</div>
-          <div class="sidebar-user-role">Doctor</div>
+          <div class="sidebar-user-name" data-user-name>Loading…</div>
+          <div class="sidebar-user-role" data-user-role>Doctor</div>
         </div>
       </div>
     </div>
@@ -52,7 +52,7 @@
       <div class="topbar-right">
         <button class="notif-btn btn">🔔<span class="notif-dot"></span></button>
         <button class="dark-toggle btn" data-theme-toggle><span data-theme-icon>🌙</span></button>
-        <a href="profile.html"><div class="avatar-placeholder sm" style="background:linear-gradient(135deg,#10b981,#059669)">SC</div></a>
+        <a href="profile.html"><div class="avatar-placeholder sm" data-user-avatar style="background:linear-gradient(135deg,#10b981,#059669)">--</div></a>
       </div>
     </header>
 
@@ -94,7 +94,7 @@
 
       <!-- Results header -->
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-        <div style="font-size:.875rem;color:var(--text-muted)">Showing <strong style="color:var(--text)" id="resultCount">8</strong> patients</div>
+        <div style="font-size:.875rem;color:var(--text-muted)">Showing <strong style="color:var(--text)" id="resultCount">0</strong> patients</div>
         <div style="display:flex;gap:.5rem">
           <button class="btn btn-ghost btn-sm" onclick="Toast.info('Exported patient list')">📥 Export</button>
         </div>
