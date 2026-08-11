@@ -69,32 +69,58 @@ const UploadManager = (() => {
     if (uploadBtn)    uploadBtn.disabled = true;
   }
 
-  function simulateUpload() {
+  async function uploadReport() {
     if (!selectedFile) { Toast.warning('Please select a file first'); return; }
 
     if (progressWrap) progressWrap.classList.remove('hidden');
     if (uploadBtn)    { uploadBtn.disabled = true; uploadBtn.textContent = 'Uploading…'; }
 
+    // Dummy progress for UI feedback since fetch doesn't support upload progress natively
     let pct = 0;
     const interval = setInterval(() => {
-      pct += Math.random() * 15;
-      if (pct >= 100) {
-        pct = 100;
-        clearInterval(interval);
-        onUploadComplete();
-      }
+      pct += Math.random() * 10;
+      if (pct >= 85) pct = 85; // stop at 85 until fetch completes
       if (progressFill) progressFill.style.width = pct + '%';
       if (progressPct)  progressPct.textContent  = Math.round(pct) + '%';
-    }, 150);
-  }
+    }, 200);
 
-  function onUploadComplete() {
-    if (uploadBtn) { uploadBtn.disabled = false; uploadBtn.textContent = 'Upload Report'; }
-    Toast.success(`"${selectedFile.name}" uploaded successfully! 🎉`);
+    const formData = new FormData();
+    formData.append('file', selectedFile);
 
-    // Add to recent uploads
-    addToRecentUploads(selectedFile);
-    clearFile();
+    try {
+      const token = localStorage.getItem('medi_token');
+      const res = await fetch(`${API_BASE}/reports/upload`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+      
+      const data = await res.json();
+      clearInterval(interval);
+      
+      if (progressFill) progressFill.style.width = '100%';
+      if (progressPct)  progressPct.textContent  = '100%';
+
+      if (data.success) {
+        if (uploadBtn) { uploadBtn.disabled = false; uploadBtn.textContent = 'Upload Report'; }
+        Toast.success(`"${selectedFile.name}" uploaded successfully! 🎉`);
+        
+        // Save report ID for chat context
+        localStorage.setItem('current_report_id', data.report_id);
+
+        addToRecentUploads(selectedFile);
+        setTimeout(clearFile, 1500); // clear after a small delay to show 100%
+      } else {
+        Toast.error(data.message || 'Upload failed');
+        if (uploadBtn) { uploadBtn.disabled = false; uploadBtn.textContent = 'Upload Report'; }
+      }
+    } catch (err) {
+      clearInterval(interval);
+      Toast.error('An error occurred during upload.');
+      if (uploadBtn) { uploadBtn.disabled = false; uploadBtn.textContent = 'Upload Report'; }
+    }
   }
 
   function addToRecentUploads(file) {
@@ -162,7 +188,7 @@ const UploadManager = (() => {
   function initUploadBtn() {
     if (!uploadBtn) return;
     uploadBtn.disabled = true;
-    uploadBtn.addEventListener('click', simulateUpload);
+    uploadBtn.addEventListener('click', uploadReport);
   }
 
   function init() {

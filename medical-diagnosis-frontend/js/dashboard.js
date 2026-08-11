@@ -153,31 +153,61 @@ function initPatientSearch() {
   const grid = document.getElementById('patientGrid');
   if (grid) grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--text-muted)">Loading patients…</div>`;
 
-  function applyFilters() {
+  async function applyFilters() {
     const q      = searchInput.value.toLowerCase().trim();
-    const status = filterStatus?.value || '';
+    if (!q) {
+      filteredPatients = [];
+      renderPatientCards([]);
+      if (resultCount) resultCount.textContent = '0';
+      return;
+    }
 
-    const filtered = filteredPatients.filter(p => {
-      const name = (p.full_name || p.name || '').toLowerCase();
-      const email = (p.email || '').toLowerCase();
-      const matchQ = !q || name.includes(q) || email.includes(q);
-      const matchStatus = !status || (p.status || 'active') === status;
-      return matchQ && matchStatus;
-    });
+    try {
+      const grid = document.getElementById('patientGrid');
+      if (grid) grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--text-muted)">Searching...</div>`;
+
+      const token = localStorage.getItem('medi_token');
+      const res = await fetch(`${API_BASE}/diagnosis/by_patient_name/${encodeURIComponent(q)}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      
+      if (data.success) {
+        // Group diagnoses by patient name for the UI cards
+        const patientMap = {};
+        data.data.forEach(d => {
+          if (!patientMap[d.patient_name]) {
+            patientMap[d.patient_name] = {
+              full_name: d.patient_name,
+              diagnoses: 0,
+              reports: 0, 
+              status: 'active'
+            };
+          }
+          patientMap[d.patient_name].diagnoses++;
+        });
+        filteredPatients = Object.values(patientMap);
+      } else {
+        filteredPatients = [];
+      }
+    } catch(err) {
+      console.error(err);
+      filteredPatients = [];
+    }
 
     currentPage = 1;
-    if (resultCount) resultCount.textContent = filtered.length;
-    renderPatientCards(filtered.slice(0, PER_PAGE));
+    if (resultCount) resultCount.textContent = filteredPatients.length;
+    renderPatientCards(filteredPatients.slice(0, PER_PAGE));
     if (paginationEl) {
-      createPagination(paginationEl, filtered.length, PER_PAGE, 1, p => {
+      createPagination(paginationEl, filteredPatients.length, PER_PAGE, 1, p => {
         currentPage = p;
-        renderPatientCards(filtered.slice((p-1)*PER_PAGE, p*PER_PAGE));
+        renderPatientCards(filteredPatients.slice((p-1)*PER_PAGE, p*PER_PAGE));
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
     }
   }
 
-  searchInput.addEventListener('input', debounce(applyFilters, 300));
+  searchInput.addEventListener('input', debounce(applyFilters, 500));
   filterStatus?.addEventListener('change', applyFilters);
 
   // Initial: show empty state — data will come from backend

@@ -46,6 +46,12 @@ def create_app() -> Flask:
 
     # ── Register Blueprints ──────────────────────────────────
     app.register_blueprint(auth_bp)
+    
+    from routes.report_routes import report_bp
+    app.register_blueprint(report_bp, url_prefix="/api/reports")
+
+    from routes.diagnosis_routes import diagnosis_bp
+    app.register_blueprint(diagnosis_bp, url_prefix="/api/diagnosis")
 
     # ── Health Check ─────────────────────────────────────────
     @app.route("/health", methods=["GET"])
@@ -125,7 +131,7 @@ if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))
     debug = os.getenv("FLASK_DEBUG", "True").lower() == "true"
 
-    print(f"\n🏥 Medical Diagnosis API starting on http://127.0.0.1:{port}")
+    print(f"\n[API] Medical Diagnosis API starting on http://127.0.0.1:{port}")
     print(f"   Environment : {os.getenv('FLASK_ENV', 'development')}")
     print(f"   Debug mode  : {debug}")
     print(f"   Health check: http://127.0.0.1:{port}/health\n")

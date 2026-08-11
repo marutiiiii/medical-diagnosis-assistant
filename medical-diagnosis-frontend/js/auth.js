@@ -124,27 +124,44 @@ function initLoginForm() {
 
     if (!valid) return;
 
-    // Mock login
+    // Real login
     const submitBtn = form.querySelector('[type="submit"]');
     submitBtn.disabled = true;
     submitBtn.textContent = 'Signing in…';
 
-    await delay(1000);
+    try {
+      const res = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: emailInput.value,
+          password: passInput.value
+        })
+      });
+      const data = await res.json();
 
-    const user = MOCK_USERS.find(u =>
-      u.email === emailInput.value && u.password === passInput.value
-    );
-
-    if (user) {
-      Session.set(user);
-      Toast.success(`Welcome back, ${user.name}! 👋`);
-      await delay(800);
-      window.location.href = user.role === 'doctor' ? 'doctor-dashboard.html' : 'patient-dashboard.html';
-    } else {
-      Toast.error('Invalid email or password. Try patient@demo.com / Patient@123');
+      if (res.ok && data.success) {
+        Session.setToken(data.token);
+        const userObj = {
+          id: data.user_id,
+          role: data.role,
+          full_name: data.full_name
+        };
+        Session.setUser(userObj);
+        Toast.success(`Welcome back, ${data.full_name || 'User'}! 👋`);
+        await delay(800);
+        window.location.href = data.role === 'doctor' ? 'doctor-dashboard.html' : 'patient-dashboard.html';
+      } else {
+        Toast.error(data.message || 'Invalid email or password.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign In';
+        Validator.showError(passInput, data.message || 'Incorrect email or password');
+      }
+    } catch (e) {
+      console.error(e);
+      Toast.error('Connection to server failed. Please try again.');
       submitBtn.disabled = false;
       submitBtn.textContent = 'Sign In';
-      Validator.showError(passInput, 'Incorrect email or password');
     }
   });
 
@@ -219,21 +236,34 @@ function initSignupForm() {
     submitBtn.disabled = true;
     submitBtn.textContent = 'Creating account…';
 
-    await delay(1200);
+    try {
+      const res = await fetch(`${API_BASE}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          full_name: fields.name.value.trim(),
+          email: fields.email.value,
+          password: fields.pass.value,
+          role: role
+        })
+      });
+      const data = await res.json();
 
-    const newUser = {
-      id: 'u' + Date.now(),
-      name: fields.name.value.trim(),
-      email: fields.email.value,
-      username: fields.username.value.trim(),
-      role,
-      joined: new Date().toISOString()
-    };
-
-    Session.set(newUser);
-    Toast.success('Account created successfully! 🎉');
-    await delay(800);
-    window.location.href = role === 'doctor' ? 'doctor-dashboard.html' : 'patient-dashboard.html';
+      if (res.ok && data.success) {
+        Toast.success('Account created successfully! 🎉 Please sign in.');
+        await delay(1500);
+        window.location.href = 'login.html';
+      } else {
+        Toast.error(data.message || 'Registration failed.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Create Account';
+      }
+    } catch (e) {
+      console.error(e);
+      Toast.error('Connection to server failed. Please try again.');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Create Account';
+    }
   });
 }
 
@@ -258,9 +288,9 @@ function addDemoHints() {
   if (!hint) return;
   hint.innerHTML = `
     <div style="background:var(--primary-light);border:1px solid var(--border);border-radius:var(--radius);padding:.75rem 1rem;font-size:.8rem;color:var(--text-muted);margin-bottom:1rem;">
-      <strong style="color:var(--primary)">Demo Credentials</strong><br>
-      <span>Patient: patient@demo.com / Patient@123</span><br>
-      <span>Doctor:  doctor@demo.com  / Doctor@123</span>
+      <strong style="color:var(--primary)">Notice</strong><br>
+      <span>Live Backend Connected.</span><br>
+      <span>Please create a new account to test login.</span>
     </div>`;
 }
 

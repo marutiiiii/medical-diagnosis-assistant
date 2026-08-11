@@ -136,13 +136,39 @@ const ChatManager = (() => {
     showTyping();
     if (sendBtn) sendBtn.disabled = true;
 
-    // Simulate AI response delay
-    const delay = 1200 + Math.random() * 800;
-    await new Promise(r => setTimeout(r, delay));
+    const reportId = localStorage.getItem('current_report_id');
+    if (!reportId) {
+      hideTyping();
+      addMessage("I cannot answer your question because no report is loaded. Please go to Upload Report first.", 'ai');
+      if (sendBtn) sendBtn.disabled = false;
+      return;
+    }
 
-    hideTyping();
-    const response = getResponse(text);
-    addMessage(response, 'ai');
+    try {
+      const token = localStorage.getItem('medi_token');
+      const res = await fetch(`${API_BASE}/diagnosis/from_report`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          report_id: reportId,
+          question: text
+        })
+      });
+      const data = await res.json();
+      hideTyping();
+      
+      if (data.success) {
+        addMessage(data.answer, 'ai');
+      } else {
+        addMessage("Sorry, I encountered an error: " + (data.message || 'Unknown error'), 'ai');
+      }
+    } catch (err) {
+      hideTyping();
+      addMessage("Sorry, I couldn't reach the server. Please try again.", 'ai');
+    }
 
     if (sendBtn) sendBtn.disabled = false;
     inputEl?.focus();
