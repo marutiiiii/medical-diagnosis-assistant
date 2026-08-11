@@ -26,3 +26,6 @@ env/
 
 # File uploads
 uploads/
+
+# Chroma vector database
+chroma_db/

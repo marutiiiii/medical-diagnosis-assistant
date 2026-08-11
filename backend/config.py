@@ -25,8 +25,9 @@ class Config:
     CORS_ORIGINS = os.getenv("CORS_ORIGINS", "*")
 
     # AI & RAG settings
-    PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
-    PINECONE_INDEX_NAME = os.getenv("PINECONE_INDEX_NAME")
+    CHROMA_API_KEY = os.getenv("CHROMA_API_KEY")
+    CHROMA_TENANT = os.getenv("CHROMA_TENANT", "default_tenant")
+    CHROMA_DATABASE = os.getenv("CHROMA_DATABASE", "default_database")
     GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
     GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 

@@ -71,8 +71,8 @@ def upload_report(user_id: str, file_bytes: bytes, original_filename: str) -> tu
             # Extract text
             extracted_text = pdf_service.extract_text_from_pdf(temp_filepath)
             
-            # Upsert to Pinecone vector DB
-            rag_service.upsert_report_to_pinecone(report_id, extracted_text)
+            # Upsert to Chroma vector DB
+            rag_service.upsert_report_to_chroma(report_id, extracted_text)
             
         except Exception as vec_err:
             print(f"Warning: Failed to vectorize report {report_id}: {vec_err}")
